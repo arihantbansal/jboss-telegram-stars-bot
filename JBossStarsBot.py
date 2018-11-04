@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import requests
 
 def start(bot, update):
-    update.message.reply_text('Ahoy {}! Welcome to JBossStarsBot. To get started, use the /stars command to fetch the stars from the GitHub repos of JBoss'.format(update.message.from_user.first_name))
+    update.message.reply_text('Ahoy {}! Welcome to JBossStarsBot. \n\nTo get started, use the /stars command to fetch the stars from the GitHub repos of JBoss'.format(update.message.from_user.first_name))
 
 
 def stars(bot, update):
@@ -28,10 +28,17 @@ def repo_stars(bot, update):
 
     bot.send_message(update.message.chat_id, star)
 
+def main():
+    updater = Updater(token)
+    
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('stars', stars))
+    dp.add_handler(MessageHandler(Filters.text, repo_stars))
+    
+    updater.start_polling()
+    updater.idle()
 
-updater = Updater(token)
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('stars', stars))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, repo_stars))
-updater.start_polling()
-updater.idle()
+  
+if __name__ == '__main__':
+    main()
