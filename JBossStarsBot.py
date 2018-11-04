@@ -31,7 +31,7 @@ def repo_stars(bot, update):
 
 updater = Updater(token)
 updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('stars'), stars)
+updater.dispatcher.add_handler(CommandHandler('stars', stars))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, repo_stars))
 updater.start_polling()
 updater.idle()
