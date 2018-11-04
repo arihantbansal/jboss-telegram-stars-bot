@@ -29,7 +29,7 @@ def repo_stars(bot, update):
     bot.send_message(update.message.chat_id, star)
 
 
-updater = Updater('768553400:AAHRK3U0if9FvImR8KJ6CKJZtzNpa6LaN4g')
+updater = Updater(token)
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('stars'), stars))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, repo_stars))
