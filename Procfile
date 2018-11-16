@@ -1,1 +1,1 @@
-worker: python JBossStarsBot.py
+web: python JBossStarsBot.py
