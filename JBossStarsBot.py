@@ -1,5 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import requests
+import os
 
 def start(bot, update):
     update.message.reply_text('Ahoy {}! Welcome to JBossStarsBot. \n\nTo get started, use the /stars command to fetch the stars from the GitHub repos of JBoss'.format(update.message.from_user.first_name))
@@ -29,15 +30,22 @@ def repo_stars(bot, update):
     bot.send_message(update.message.chat_id, star)
 
 def main():
-    updater = Updater(token)
+    TOKEN = '756573527:AAFr2VIuvp19xXgvHdt8w13qUP9DX4ESR9E'
+    updater = Updater(TOKEN)
+    PORT = int(os.environ.get('PORT', '8443')) 
+    
     
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('stars', stars))
     dp.add_handler(MessageHandler(Filters.text, repo_stars))
     
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                      port=PORT,
+                      url_path=TOKEN)
+    updater.bot.set_webhook("https://gcijbossbot.herokuapp.com/" + TOKEN)
     updater.idle()
+
 
   
 if __name__ == '__main__':
