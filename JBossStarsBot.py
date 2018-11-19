@@ -11,42 +11,35 @@ def stars(bot, update):
     json = api.json()
     stars = ''
     for i in range(len(json)):
-        stars = stars + '\n' + res[i]['name'] + ' : ' + str(res[i]['stargazers_count'])
+        stars = stars + '\n' + json[i]['name'] + ' : ' + str(json[i]['stargazers_count'])
 
     update.message.reply_text('Here\'s the list of all the JBoss repositories on GitHub along with their respective star count. \n\n' + stars + '\n\nTo get the stars of a specific repository, enter the name of the repository.')
 
 
 def repo_stars(bot, update):
-    api = requests.get('https://api.github.com/orgs/JBossOutreach')
+    api = requests.get('https://api.github.com/orgs/JBossOutreach/repos')
     json = api.json()
     star = ''
     for i in range(len(json)):
-        cur = res[i]['name']
+        cur = json[i]['name']
         if cur == update.message.text:
-            star = star + cur + ' : ' + str(res[i]['stargazers_count'])
-        if cur == '':
+            star += cur + ' : ' + str(json[i]['stargazers_count'])
+            break
+        elif cur == '':
             star = 'No such repository found.'
 
-    bot.send_message(update.message.chat_id, star)
+    bot.send_message(chat_id=update.message.chat_id, out=star)
 
-def main():
-    TOKEN = '756573527:AAFr2VIuvp19xXgvHdt8w13qUP9DX4ESR9E'
-    updater = Updater(TOKEN)
-    PORT = int(os.environ.get('PORT', '8443')) 
-    
-    
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('stars', stars))
-    dp.add_handler(MessageHandler(Filters.text, repo_stars))
-    
-    updater.start_webhook(listen="0.0.0.0",
+TOKEN = ''
+PORT = int(os.environ.get('PORT', '8443'))
+updater = Updater(TOKEN)                           
+
+updater.dispatcher.add_handler(CommandHandler('start', start))
+updater.dispatcher.add_handler(CommandHandler('stars', stars))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, repo_stars))
+
+updater.start_webhook(listen="0.0.0.0",
                       port=PORT,
                       url_path=TOKEN)
-    updater.bot.set_webhook("https://gcijbossbot.herokuapp.com/" + TOKEN)
-    updater.idle()
-
-
-  
-if __name__ == '__main__':
-    main()
+updater.bot.set_webhook("https://gcijbossbot.herokuapp.com/" + TOKEN)
+updater.idle()
